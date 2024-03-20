@@ -4,10 +4,7 @@ interface Contributor {
 }
 
 export async function showContributors($miduContainer: HTMLDivElement) {
-	const url = "https://api.github.com/repos/midudev/la-velada-web-oficial/contributors"
-
-	const response = await fetch(url)
-	const contributors = (await response.json()) as Contributor[]
+	const contributors = await getContributors()
 
 	for (let i = 0; i < contributors.length; i++) {
 		setTimeout(() => {
@@ -31,6 +28,21 @@ export async function showContributors($miduContainer: HTMLDivElement) {
 			$miduContainer.appendChild(img)
 		}, i * 300)
 	}
+}
+
+export async function getContributors() {
+	const url = "https://api.github.com/repos/midudev/la-velada-web-oficial/contributors"
+	const response = await fetch(url)
+
+	const linkHeader = response.headers.get("link")
+	const pageCount = linkHeader ? Number(linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || "1") : 1
+	const randomPage = Math.floor(Math.random() * pageCount) + 1
+	const randomPageUrl = `${url}?page=${randomPage}`
+	const randomPageResponse = await fetch(randomPageUrl)
+
+	const contributors = (await randomPageResponse.json()) as Contributor[]
+
+	return contributors
 }
 
 export function checkAndRemoveContainer($miduContainer: HTMLDivElement) {
