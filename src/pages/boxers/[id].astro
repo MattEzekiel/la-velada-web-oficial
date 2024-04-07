@@ -30,8 +30,6 @@ export function getStaticPaths() {
 	})
 }
 
-export const prerender = true
-
 const { id } = Astro.params
 
 const [boxer] = BOXERS.filter((boxer) => boxer.id === id)
@@ -90,7 +88,7 @@ const flagAlt = countryName === undefined ? "un país" : countryName.name
 
 <Layout
 	description={`Información del luchador ${boxer.name}`}
-	title={`${boxer.name} - Información del boxeador de La Velada IV`}
+	title={`${boxer.name} - La Velada del Año IV`}
 	preload={preloadBoxerImage}
 >
 	<main>
@@ -123,7 +121,11 @@ const flagAlt = countryName === undefined ? "un país" : countryName.name
 					class="order-3 mx-auto flex w-full max-w-[450px] flex-col md:w-auto md:max-w-none md:gap-y-20 lg:w-1/4"
 				>
 					<BoxerDetailInfo title="Edad" value={`${boxer.age} años`} id="boxer-edad" />
-					<BoxerDetailInfo title="Peso" value={`${boxer.weight} kg`} id="boxer-peso" />
+					{
+						boxer.weight && (
+							<BoxerDetailInfo title="Peso" value={`${boxer.weight} kg`} id="boxer-peso" />
+						)
+					}
 					<BoxerDetailInfo title="Altura" value={`${boxer.height} m`} id="boxer-altura" />
 					<BoxerDetailInfo title="Guardia" value={guardBoxer} id="boxer-guardia" />
 
